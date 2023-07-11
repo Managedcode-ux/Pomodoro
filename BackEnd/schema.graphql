@@ -2,6 +2,26 @@
 ### Do not make changes to this file directly
 
 
+"""Date custom scalar type"""
+scalar Date
+
+enum Priority {
+  HIGH
+  LOW
+  MODERATE
+}
+
 type Query {
-  ok: Boolean!
+  Tasks: [Task!]
+}
+
+type Task {
+  CompletionStatus: Boolean!
+  Description: String!
+  DueDate: Date!
+  Id: ID!
+  Priority: Priority
+  Title: String!
+  Tomatoes: Int!
+  UserId: ID!
 }
