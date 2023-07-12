@@ -5,6 +5,10 @@
 """Date custom scalar type"""
 scalar Date
 
+type Mutation {
+  CreateTask(CreatedOn: Date, Description: String!, DueDate: Date, Priority: String, Title: String!): Boolean
+}
+
 enum Priority {
   HIGH
   LOW
@@ -17,11 +21,23 @@ type Query {
 
 type Task {
   CompletionStatus: Boolean!
+  CreatedOn: Date!
   Description: String!
   DueDate: Date!
-  Id: ID!
   Priority: Priority
+  TaskId: ID!
   Title: String!
   Tomatoes: Int!
   UserId: ID!
+}
+
+type User {
+  Email: String!
+  LatestTask: ID!
+  Password: String!
+
+  """A list of the task's previous tasks id's"""
+  PreviousTasks: [ID!]
+  UserId: String!
+  Username: String!
 }

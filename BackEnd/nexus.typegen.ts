@@ -44,16 +44,26 @@ export interface NexusGenScalars {
 }
 
 export interface NexusGenObjects {
+  Mutation: {};
   Query: {};
   Task: { // root type
     CompletionStatus: boolean; // Boolean!
+    CreatedOn: NexusGenScalars['Date']; // Date!
     Description: string; // String!
     DueDate: NexusGenScalars['Date']; // Date!
-    Id: string; // ID!
     Priority?: NexusGenEnums['Priority'] | null; // Priority
+    TaskId: string; // ID!
     Title: string; // String!
     Tomatoes: number; // Int!
     UserId: string; // ID!
+  }
+  User: { // root type
+    Email: string; // String!
+    LatestTask: string; // ID!
+    Password: string; // String!
+    PreviousTasks?: string[] | null; // [ID!]
+    UserId: string; // String!
+    Username: string; // String!
   }
 }
 
@@ -68,38 +78,71 @@ export type NexusGenRootTypes = NexusGenObjects
 export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars & NexusGenEnums
 
 export interface NexusGenFieldTypes {
+  Mutation: { // field return type
+    CreateTask: boolean | null; // Boolean
+  }
   Query: { // field return type
     Tasks: NexusGenRootTypes['Task'][] | null; // [Task!]
   }
   Task: { // field return type
     CompletionStatus: boolean; // Boolean!
+    CreatedOn: NexusGenScalars['Date']; // Date!
     Description: string; // String!
     DueDate: NexusGenScalars['Date']; // Date!
-    Id: string; // ID!
     Priority: NexusGenEnums['Priority'] | null; // Priority
+    TaskId: string; // ID!
     Title: string; // String!
     Tomatoes: number; // Int!
     UserId: string; // ID!
   }
+  User: { // field return type
+    Email: string; // String!
+    LatestTask: string; // ID!
+    Password: string; // String!
+    PreviousTasks: string[] | null; // [ID!]
+    UserId: string; // String!
+    Username: string; // String!
+  }
 }
 
 export interface NexusGenFieldTypeNames {
+  Mutation: { // field return type name
+    CreateTask: 'Boolean'
+  }
   Query: { // field return type name
     Tasks: 'Task'
   }
   Task: { // field return type name
     CompletionStatus: 'Boolean'
+    CreatedOn: 'Date'
     Description: 'String'
     DueDate: 'Date'
-    Id: 'ID'
     Priority: 'Priority'
+    TaskId: 'ID'
     Title: 'String'
     Tomatoes: 'Int'
     UserId: 'ID'
   }
+  User: { // field return type name
+    Email: 'String'
+    LatestTask: 'ID'
+    Password: 'String'
+    PreviousTasks: 'ID'
+    UserId: 'String'
+    Username: 'String'
+  }
 }
 
 export interface NexusGenArgTypes {
+  Mutation: {
+    CreateTask: { // args
+      CreatedOn?: NexusGenScalars['Date'] | null; // Date
+      Description: string; // String!
+      DueDate?: NexusGenScalars['Date'] | null; // Date
+      Priority?: string | null; // String
+      Title: string; // String!
+    }
+  }
 }
 
 export interface NexusGenAbstractTypeMembers {

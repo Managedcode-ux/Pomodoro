@@ -1,14 +1,15 @@
-import { asNexusMethod, enumType, extendType, objectType, scalarType } from "nexus";
+import {  extendType, intArg, mutationField, nonNull, objectType, stringArg } from "nexus";
 import { DateScalar } from "./CustomTypes/customTypes";
 import { Priority } from "./CustomTypes/Enums";
-import { title } from "process";
 import { data } from "../testData";
-// export const date_type = asNexusMethod(DateScalar,"date")
+import { title } from "process";
+
+
 
 export const Task = objectType({
   name:"Task",
   definition(t){
-    t.nonNull.id("Id")
+    t.nonNull.id("TaskId")
     t.nonNull.id("UserId")
     t.nonNull.string("Title")
     t.nonNull.string("Description")
@@ -20,11 +21,21 @@ export const Task = objectType({
       type:Priority
     })
     t.nonNull.boolean("CompletionStatus")
+    t.nonNull.field("CreatedOn",{
+      type:DateScalar
+    })
   }
 })
 
 
-export const getAllTasks = extendType({
+// TODO :- Create a Query to get tasks
+// TODO :- Create a mutation to create tasks
+// TODO :- Create a mutation to delete tasks
+// TODO :- Create a mutation to update tasks
+const tasks_list:any = []
+
+
+export const TasksQuery = extendType({
   type:'Query',
   definition(t){
     t.list.nonNull.field("Tasks",{
@@ -33,8 +44,44 @@ export const getAllTasks = extendType({
         console.log("PARENT =>",parent)
         console.log("ARGS =>",args)
         console.log("CONTEXT =>",context)
-        console.log(data)
+        // console.log(data)
+        console.log(tasks_list)
+        return tasks_list
       }
     })
   }
 })
+
+// CREATE TASK MUTATION
+
+
+
+export const CreateTask  = mutationField('CreateTask',{
+  type: "Boolean",
+  args:{
+    Title:nonNull(stringArg()),
+    Description:nonNull(stringArg()),
+    DueDate:DateScalar,
+    Priority:stringArg(),
+    CreatedOn:DateScalar
+    
+  },
+  resolve(parent,args,context){
+
+    const {Title,Description,DueDate,CreatedOn,Priority} = args
+
+    tasks_list.push({
+      "Title":Title,
+      "Description":Description,
+      "DueDate":DueDate,
+      "CreatedOn":CreatedOn,
+      "Priority":Priority
+    })
+
+
+    console.log("PARENT =>",parent)
+    console.log("ARGS =>",args)
+    console.log("CONTEXT =>",context)
+
+  }
+}) 
