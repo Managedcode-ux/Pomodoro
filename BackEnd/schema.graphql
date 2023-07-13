@@ -2,11 +2,8 @@
 ### Do not make changes to this file directly
 
 
-"""Date custom scalar type"""
-scalar Date
-
 type Mutation {
-  CreateTask(CreatedOn: Date, Description: String!, DueDate: Date, Priority: String, Title: String!): Boolean
+  CreateTask(Task: [TaskInputType!]): [Task]
 }
 
 enum Priority {
@@ -21,14 +18,22 @@ type Query {
 
 type Task {
   CompletionStatus: Boolean!
-  CreatedOn: Date!
+  CreatedOn: String!
   Description: String!
-  DueDate: Date!
+  DueDate: String!
   Priority: Priority
   TaskId: ID!
   Title: String!
   Tomatoes: Int!
   UserId: ID!
+}
+
+input TaskInputType {
+  CreatedOn: String!
+  Description: String
+  DueDate: String!
+  Priority: Priority
+  Title: String!
 }
 
 type User {

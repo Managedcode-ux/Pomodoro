@@ -1,8 +1,24 @@
-import {  extendType, intArg, mutationField, nonNull, objectType, stringArg } from "nexus";
+import {  extendType, inputObjectType, intArg, list, mutationField, nonNull, nullable, objectType, stringArg } from "nexus";
 import { DateScalar } from "./CustomTypes/customTypes";
 import { Priority } from "./CustomTypes/Enums";
-import { data } from "../testData";
-import { title } from "process";
+
+
+export const TaskInput = inputObjectType({
+  name:"TaskInputType",
+  definition(t) {
+    t.nonNull.string("Title")
+    t.string("Description")
+    // t.field("DueDate", {type:DateScalar});
+    // t.nonNull.field("CreatedOn",{
+    //   type:DateScalar
+    // })
+    t.nonNull.string("DueDate")
+    t.nonNull.string("CreatedOn")
+    t.field("Priority",{
+      type:Priority
+    })
+  },
+})
 
 
 
@@ -13,28 +29,35 @@ export const Task = objectType({
     t.nonNull.id("UserId")
     t.nonNull.string("Title")
     t.nonNull.string("Description")
-    t.nonNull.field("DueDate",{
-      type:DateScalar
-    })
+    // t.nonNull.field("DueDate",{
+    //   type:DateScalar
+    // })
+    t.nonNull.string("DueDate")
     t.nonNull.int("Tomatoes")
     t.field("Priority",{
       type:Priority
     })
     t.nonNull.boolean("CompletionStatus")
-    t.nonNull.field("CreatedOn",{
-      type:DateScalar
-    })
+    // t.nonNull.field("CreatedOn",{
+    //   type:DateScalar
+    // })
+    t.nonNull.string("CreatedOn")
   }
 })
 
+// FIXME:- Convert CreatedOn and DueDate inside Task(ObjectType) and TaskInput to DateScalar when frontend is completed
 
-// TODO :- Create a Query to get tasks
-// TODO :- Create a mutation to create tasks
-// TODO :- Create a mutation to delete tasks
-// TODO :- Create a mutation to update tasks
+
+// TODO 1:- Create a Query to get tasks 
+// TODO 2:- Create a mutation to create tasks
+// TODO 3:- Connect graphQL to mongo
+// TODO 4:- Create a mutation to delete tasks
+// TODO 5:- Create a mutation to update tasks
 const tasks_list:any = []
 
 
+
+// Get Tasks Query
 export const TasksQuery = extendType({
   type:'Query',
   definition(t){
@@ -52,36 +75,16 @@ export const TasksQuery = extendType({
   }
 })
 
+
+
+
 // CREATE TASK MUTATION
-
-
-
 export const CreateTask  = mutationField('CreateTask',{
-  type: "Boolean",
+  type: list(Task),
   args:{
-    Title:nonNull(stringArg()),
-    Description:nonNull(stringArg()),
-    DueDate:DateScalar,
-    Priority:stringArg(),
-    CreatedOn:DateScalar
-    
+    Task:list(nonNull(TaskInput))
   },
   resolve(parent,args,context){
-
-    const {Title,Description,DueDate,CreatedOn,Priority} = args
-
-    tasks_list.push({
-      "Title":Title,
-      "Description":Description,
-      "DueDate":DueDate,
-      "CreatedOn":CreatedOn,
-      "Priority":Priority
-    })
-
-
-    console.log("PARENT =>",parent)
-    console.log("ARGS =>",args)
-    console.log("CONTEXT =>",context)
-
+    const Task = args.Task
   }
 }) 

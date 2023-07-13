@@ -4,23 +4,9 @@
  */
 
 
-import type { core } from "nexus"
-declare global {
-  interface NexusGenCustomInputMethods<TypeName extends string> {
-    /**
-     * Date custom scalar type
-     */
-    date<FieldName extends string>(fieldName: FieldName, opts?: core.CommonInputFieldConfig<TypeName, FieldName>): void // "Date";
-  }
-}
-declare global {
-  interface NexusGenCustomOutputMethods<TypeName extends string> {
-    /**
-     * Date custom scalar type
-     */
-    date<FieldName extends string>(fieldName: FieldName, ...opts: core.ScalarOutSpread<TypeName, FieldName>): void // "Date";
-  }
-}
+
+
+
 
 
 declare global {
@@ -28,6 +14,13 @@ declare global {
 }
 
 export interface NexusGenInputs {
+  TaskInputType: { // input type
+    CreatedOn: string; // String!
+    Description?: string | null; // String
+    DueDate: string; // String!
+    Priority?: NexusGenEnums['Priority'] | null; // Priority
+    Title: string; // String!
+  }
 }
 
 export interface NexusGenEnums {
@@ -40,7 +33,6 @@ export interface NexusGenScalars {
   Float: number
   Boolean: boolean
   ID: string
-  Date: any
 }
 
 export interface NexusGenObjects {
@@ -48,9 +40,9 @@ export interface NexusGenObjects {
   Query: {};
   Task: { // root type
     CompletionStatus: boolean; // Boolean!
-    CreatedOn: NexusGenScalars['Date']; // Date!
+    CreatedOn: string; // String!
     Description: string; // String!
-    DueDate: NexusGenScalars['Date']; // Date!
+    DueDate: string; // String!
     Priority?: NexusGenEnums['Priority'] | null; // Priority
     TaskId: string; // ID!
     Title: string; // String!
@@ -79,16 +71,16 @@ export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars & NexusGenEnu
 
 export interface NexusGenFieldTypes {
   Mutation: { // field return type
-    CreateTask: boolean | null; // Boolean
+    CreateTask: Array<NexusGenRootTypes['Task'] | null> | null; // [Task]
   }
   Query: { // field return type
     Tasks: NexusGenRootTypes['Task'][] | null; // [Task!]
   }
   Task: { // field return type
     CompletionStatus: boolean; // Boolean!
-    CreatedOn: NexusGenScalars['Date']; // Date!
+    CreatedOn: string; // String!
     Description: string; // String!
-    DueDate: NexusGenScalars['Date']; // Date!
+    DueDate: string; // String!
     Priority: NexusGenEnums['Priority'] | null; // Priority
     TaskId: string; // ID!
     Title: string; // String!
@@ -107,16 +99,16 @@ export interface NexusGenFieldTypes {
 
 export interface NexusGenFieldTypeNames {
   Mutation: { // field return type name
-    CreateTask: 'Boolean'
+    CreateTask: 'Task'
   }
   Query: { // field return type name
     Tasks: 'Task'
   }
   Task: { // field return type name
     CompletionStatus: 'Boolean'
-    CreatedOn: 'Date'
+    CreatedOn: 'String'
     Description: 'String'
-    DueDate: 'Date'
+    DueDate: 'String'
     Priority: 'Priority'
     TaskId: 'ID'
     Title: 'String'
@@ -136,11 +128,7 @@ export interface NexusGenFieldTypeNames {
 export interface NexusGenArgTypes {
   Mutation: {
     CreateTask: { // args
-      CreatedOn?: NexusGenScalars['Date'] | null; // Date
-      Description: string; // String!
-      DueDate?: NexusGenScalars['Date'] | null; // Date
-      Priority?: string | null; // String
-      Title: string; // String!
+      Task?: NexusGenInputs['TaskInputType'][] | null; // [TaskInputType!]
     }
   }
 }
@@ -153,7 +141,7 @@ export interface NexusGenTypeInterfaces {
 
 export type NexusGenObjectNames = keyof NexusGenObjects;
 
-export type NexusGenInputNames = never;
+export type NexusGenInputNames = keyof NexusGenInputs;
 
 export type NexusGenEnumNames = keyof NexusGenEnums;
 
