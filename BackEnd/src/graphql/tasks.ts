@@ -1,7 +1,8 @@
 import {  extendType, inputObjectType, intArg, list, mutationField, nonNull, nullable, objectType, stringArg } from "nexus";
 import { DateScalar } from "./CustomTypes/customTypes";
 import { Priority } from "./CustomTypes/Enums";
-
+import { Task_db } from "nexus-prisma";
+import {prisma_obj} from "../prisma/prisma"
 
 export const TaskInput = inputObjectType({
   name:"TaskInputType",
@@ -12,7 +13,7 @@ export const TaskInput = inputObjectType({
     // t.nonNull.field("CreatedOn",{
     //   type:DateScalar
     // })
-    t.nonNull.string("DueDate")
+    t.string("DueDate")
     t.nonNull.string("CreatedOn")
     t.field("Priority",{
       type:Priority
@@ -64,6 +65,8 @@ export const TasksQuery = extendType({
     t.list.nonNull.field("Tasks",{
       type:'Task',
       resolve(parent,args,context){
+
+        
         console.log("PARENT =>",parent)
         console.log("ARGS =>",args)
         console.log("CONTEXT =>",context)
@@ -79,12 +82,48 @@ export const TasksQuery = extendType({
 
 
 // CREATE TASK MUTATION
-export const CreateTask  = mutationField('CreateTask',{
-  type: list(Task),
+
+
+
+export const CreateTask = mutationField('CreateTask',{
+  type: list(nonNull(Task)),
   args:{
     Task:list(nonNull(TaskInput))
   },
-  resolve(parent,args,context){
-    const Task = args.Task
+  async resolve(parent,args,context){
+    
+      const InputTask = args.Task
+
+    // console.log("INPUT TASK ==>", InputTask)
+
+    // const res = 
+    try{
+      // await prisma_obj.task_db.createMany({
+      //   data:InputTask
+      // })
+
+      const res = await prisma_obj.$runCommandRaw({
+        insert:'Task_db',
+        bypassDocumentValidation:false,
+        documents:InputTask
+      })
+
+
+      console.log(res)
+      console.log(typeof(res))
+
+      
+    }catch(e){
+      console.log("Something went wrong")
+      console.log(e)
+    }
+    // if(typeof(res))
+
+    // console.log("Result ==>",res)
+    // console.log("Result type ==>",typeof(res))
+
+    
+
+    
   }
 }) 

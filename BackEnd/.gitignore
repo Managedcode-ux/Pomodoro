@@ -3,8 +3,4 @@ dist/
 src/generated/
 *.env*
 *.db
-
-nexus.typegen.ts*
-*schema.graphql*
-package-lock.json
 package.json

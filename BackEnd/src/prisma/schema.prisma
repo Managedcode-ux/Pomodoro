@@ -1,0 +1,35 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator nexusPrisma {
+  provider = "nexus-prisma"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+
+model Task_db{
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  //userId
+  Title String
+  Description String
+  DueDate String? @default("null")
+  Tomatoes Int? @default(-1)
+  Priority String?  @default("null")
+  CompletionStatus Boolean? @default(false)
+  CreatedOn String? @default("null")
+}
+
+// model User{
+//   id String @id @default(auto()) @map("_id") @db.ObjectId
+//   name String @unique
+// }

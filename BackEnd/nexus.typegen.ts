@@ -17,7 +17,7 @@ export interface NexusGenInputs {
   TaskInputType: { // input type
     CreatedOn: string; // String!
     Description?: string | null; // String
-    DueDate: string; // String!
+    DueDate?: string | null; // String
     Priority?: NexusGenEnums['Priority'] | null; // Priority
     Title: string; // String!
   }
@@ -71,7 +71,7 @@ export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars & NexusGenEnu
 
 export interface NexusGenFieldTypes {
   Mutation: { // field return type
-    CreateTask: Array<NexusGenRootTypes['Task'] | null> | null; // [Task]
+    CreateTask: NexusGenRootTypes['Task'][] | null; // [Task!]
   }
   Query: { // field return type
     Tasks: NexusGenRootTypes['Task'][] | null; // [Task!]
