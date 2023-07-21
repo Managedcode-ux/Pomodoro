@@ -1,4 +1,5 @@
 import { list, nonNull, objectType } from "nexus";
+import { inputObjectType, mutationField, mutationType } from "nexus/dist/core";
 
 
 export const User = objectType({
@@ -8,10 +9,26 @@ export const User = objectType({
       t.nonNull.string("Username");
       t.nonNull.string("Email");
       t.nonNull.string("Password");
-      t.field("PreviousTasks",{
-        type:list(nonNull('ID')),
-        description: "A list of the task's previous tasks id's"
-      })
-      t.nonNull.id("LatestTask");
   },
 })
+
+export const UserInput = inputObjectType({
+  name:"UserInputType",
+   definition(t){
+      t.nonNull.string("Username");
+      t.nonNull.string("Email")
+      t.nonNull.string("Password")
+    }
+  }
+)
+
+
+ export const UserCreation = mutationField("CreateUser",{
+  type:User,
+  args:{UserInput},
+  async resolve(parents,args,context){
+    console.log("ARGS ==>", args)
+    const[Username, Email, Password] = args.Data
+    console.log(Username,Email,Password)
+  }
+})  

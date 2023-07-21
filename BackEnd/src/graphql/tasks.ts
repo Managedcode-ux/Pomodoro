@@ -1,8 +1,9 @@
 import {  extendType, inputObjectType, intArg, list, mutationField, nonNull, nullable, objectType, stringArg } from "nexus";
 import { DateScalar } from "./CustomTypes/customTypes";
 import { Priority } from "./CustomTypes/Enums";
-import { Task_db } from "nexus-prisma";
 import {prisma_obj} from "../prisma/prisma"
+
+
 
 export const TaskInput = inputObjectType({
   name:"TaskInputType",
@@ -49,8 +50,8 @@ export const Task = objectType({
 // FIXME:- Convert CreatedOn and DueDate inside Task(ObjectType) and TaskInput to DateScalar when frontend is completed
 
 
-// TODO 1:- Create a Query to get tasks 
-// TODO 2:- Create a mutation to create tasks
+// TODO 1:- Create a Query to get tasks  
+// TODO 2:- Create a mutation to create tasks (Done)
 // TODO 3:- Connect graphQL to mongo
 // TODO 4:- Create a mutation to delete tasks
 // TODO 5:- Create a mutation to update tasks
@@ -59,8 +60,7 @@ const tasks_list:any = []
 
 
 // Get Tasks Query
-export const TasksQuery = extendType({
-  type:'Query',
+export const TasksQuery = extendType({ type:'Query',
   definition(t){
     t.list.nonNull.field("Tasks",{
       type:'Task',
@@ -86,44 +86,32 @@ export const TasksQuery = extendType({
 
 
 export const CreateTask = mutationField('CreateTask',{
-  type: list(nonNull(Task)),
+  type: "Boolean",
   args:{
     Task:list(nonNull(TaskInput))
   },
   async resolve(parent,args,context){
     
-      const InputTask = args.Task
-
-    // console.log("INPUT TASK ==>", InputTask)
-
-    // const res = 
+    const InputTask = args.Task
     try{
-      // await prisma_obj.task_db.createMany({
-      //   data:InputTask
-      // })
-
       const res = await prisma_obj.$runCommandRaw({
         insert:'Task_db',
         bypassDocumentValidation:false,
         documents:InputTask
       })
 
+      if(res.ok === 1){
+        return true;
+      }
+      else{
+        console.error(res)
+        return false;
+      }
 
-      console.log(res)
-      console.log(typeof(res))
-
-      
     }catch(e){
-      console.log("Something went wrong")
-      console.log(e)
+      console.error(e)
+      return false
     }
-    // if(typeof(res))
-
-    // console.log("Result ==>",res)
-    // console.log("Result type ==>",typeof(res))
-
-    
-
     
   }
 }) 

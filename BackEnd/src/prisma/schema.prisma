@@ -21,12 +21,20 @@ model Task_db{
   id String @id @default(auto()) @map("_id") @db.ObjectId
   //userId
   Title String
-  Description String
+  Description String? @default("null")
   DueDate String? @default("null")
   Tomatoes Int? @default(-1)
   Priority String?  @default("null")
   CompletionStatus Boolean? @default(false)
   CreatedOn String? @default("null")
+}
+
+
+model User_coll{
+  UserId String @id @default(auto()) @map("_id") @db.ObjectId
+  UserName String 
+  Email String @unique
+  Password String 
 }
 
 // model User{

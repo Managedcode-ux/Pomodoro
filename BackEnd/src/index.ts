@@ -4,7 +4,7 @@ import { startStandaloneServer } from '@apollo/server/standalone';
 import {schema} from "./schema";
 
 
-const PORT = 3000 
+const PORT = 9000 
 
 const start = async() => {
   const server = new ApolloServer({ schema });

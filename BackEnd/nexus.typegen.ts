@@ -21,6 +21,11 @@ export interface NexusGenInputs {
     Priority?: NexusGenEnums['Priority'] | null; // Priority
     Title: string; // String!
   }
+  UserInputType: { // input type
+    Email: string; // String!
+    Password: string; // String!
+    Username: string; // String!
+  }
 }
 
 export interface NexusGenEnums {
@@ -51,9 +56,7 @@ export interface NexusGenObjects {
   }
   User: { // root type
     Email: string; // String!
-    LatestTask: string; // ID!
     Password: string; // String!
-    PreviousTasks?: string[] | null; // [ID!]
     UserId: string; // String!
     Username: string; // String!
   }
@@ -71,7 +74,8 @@ export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars & NexusGenEnu
 
 export interface NexusGenFieldTypes {
   Mutation: { // field return type
-    CreateTask: NexusGenRootTypes['Task'][] | null; // [Task!]
+    CreateTask: boolean | null; // Boolean
+    CreateUser: NexusGenRootTypes['User'] | null; // User
   }
   Query: { // field return type
     Tasks: NexusGenRootTypes['Task'][] | null; // [Task!]
@@ -89,9 +93,7 @@ export interface NexusGenFieldTypes {
   }
   User: { // field return type
     Email: string; // String!
-    LatestTask: string; // ID!
     Password: string; // String!
-    PreviousTasks: string[] | null; // [ID!]
     UserId: string; // String!
     Username: string; // String!
   }
@@ -99,7 +101,8 @@ export interface NexusGenFieldTypes {
 
 export interface NexusGenFieldTypeNames {
   Mutation: { // field return type name
-    CreateTask: 'Task'
+    CreateTask: 'Boolean'
+    CreateUser: 'User'
   }
   Query: { // field return type name
     Tasks: 'Task'
@@ -117,9 +120,7 @@ export interface NexusGenFieldTypeNames {
   }
   User: { // field return type name
     Email: 'String'
-    LatestTask: 'ID'
     Password: 'String'
-    PreviousTasks: 'ID'
     UserId: 'String'
     Username: 'String'
   }
@@ -129,6 +130,9 @@ export interface NexusGenArgTypes {
   Mutation: {
     CreateTask: { // args
       Task?: NexusGenInputs['TaskInputType'][] | null; // [TaskInputType!]
+    }
+    CreateUser: { // args
+      UserInput?: NexusGenInputs['UserInputType'] | null; // UserInputType
     }
   }
 }

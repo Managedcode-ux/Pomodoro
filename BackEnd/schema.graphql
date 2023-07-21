@@ -3,7 +3,8 @@
 
 
 type Mutation {
-  CreateTask(Task: [TaskInputType!]): [Task!]
+  CreateTask(Task: [TaskInputType!]): Boolean
+  CreateUser(UserInput: UserInputType): User
 }
 
 enum Priority {
@@ -38,11 +39,13 @@ input TaskInputType {
 
 type User {
   Email: String!
-  LatestTask: ID!
   Password: String!
-
-  """A list of the task's previous tasks id's"""
-  PreviousTasks: [ID!]
   UserId: String!
+  Username: String!
+}
+
+input UserInputType {
+  Email: String!
+  Password: String!
   Username: String!
 }
