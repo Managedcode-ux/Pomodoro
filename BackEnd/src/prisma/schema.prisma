@@ -7,9 +7,6 @@ generator client {
   provider = "prisma-client-js"
 }
 
-generator nexusPrisma {
-  provider = "nexus-prisma"
-}
 
 datasource db {
   provider = "mongodb"
@@ -32,12 +29,8 @@ model Task_db{
 
 model User_coll{
   UserId String @id @default(auto()) @map("_id") @db.ObjectId
-  UserName String 
+  Username String 
   Email String @unique
   Password String 
 }
 
-// model User{
-//   id String @id @default(auto()) @map("_id") @db.ObjectId
-//   name String @unique
-// }
