@@ -2,9 +2,15 @@
 ### Do not make changes to this file directly
 
 
+input LoginInputType {
+  Email: String!
+  Password: String!
+}
+
 type Mutation {
   CreateTask(Task: [TaskInputType!]): Boolean
   CreateUser(UserInput: UserInputType): User
+  Login(LoginInput: LoginInputType): String
 }
 
 enum Priority {
@@ -39,9 +45,8 @@ input TaskInputType {
 
 type User {
   Email: String!
-  Password: String!
   UserId: String!
-  Username: String!
+  Username: String
 }
 
 input UserInputType {

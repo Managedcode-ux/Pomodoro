@@ -14,6 +14,10 @@ declare global {
 }
 
 export interface NexusGenInputs {
+  LoginInputType: { // input type
+    Email: string; // String!
+    Password: string; // String!
+  }
   TaskInputType: { // input type
     CreatedOn: string; // String!
     Description?: string | null; // String
@@ -56,9 +60,8 @@ export interface NexusGenObjects {
   }
   User: { // root type
     Email: string; // String!
-    Password: string; // String!
     UserId: string; // String!
-    Username: string; // String!
+    Username?: string | null; // String
   }
 }
 
@@ -76,6 +79,7 @@ export interface NexusGenFieldTypes {
   Mutation: { // field return type
     CreateTask: boolean | null; // Boolean
     CreateUser: NexusGenRootTypes['User'] | null; // User
+    Login: string | null; // String
   }
   Query: { // field return type
     Tasks: NexusGenRootTypes['Task'][] | null; // [Task!]
@@ -93,9 +97,8 @@ export interface NexusGenFieldTypes {
   }
   User: { // field return type
     Email: string; // String!
-    Password: string; // String!
     UserId: string; // String!
-    Username: string; // String!
+    Username: string | null; // String
   }
 }
 
@@ -103,6 +106,7 @@ export interface NexusGenFieldTypeNames {
   Mutation: { // field return type name
     CreateTask: 'Boolean'
     CreateUser: 'User'
+    Login: 'String'
   }
   Query: { // field return type name
     Tasks: 'Task'
@@ -120,7 +124,6 @@ export interface NexusGenFieldTypeNames {
   }
   User: { // field return type name
     Email: 'String'
-    Password: 'String'
     UserId: 'String'
     Username: 'String'
   }
@@ -133,6 +136,9 @@ export interface NexusGenArgTypes {
     }
     CreateUser: { // args
       UserInput?: NexusGenInputs['UserInputType'] | null; // UserInputType
+    }
+    Login: { // args
+      LoginInput?: NexusGenInputs['LoginInputType'] | null; // LoginInputType
     }
   }
 }
