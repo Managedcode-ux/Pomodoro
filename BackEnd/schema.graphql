@@ -10,6 +10,7 @@ input LoginInputType {
 type Mutation {
   CreateTask(Task: [TaskInputType!]): Boolean
   CreateUser(UserInput: UserInputType): User
+  DeleteUser(InPassword: String!): User
   Login(LoginInput: LoginInputType): String
 }
 

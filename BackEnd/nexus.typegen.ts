@@ -79,6 +79,7 @@ export interface NexusGenFieldTypes {
   Mutation: { // field return type
     CreateTask: boolean | null; // Boolean
     CreateUser: NexusGenRootTypes['User'] | null; // User
+    DeleteUser: NexusGenRootTypes['User'] | null; // User
     Login: string | null; // String
   }
   Query: { // field return type
@@ -106,6 +107,7 @@ export interface NexusGenFieldTypeNames {
   Mutation: { // field return type name
     CreateTask: 'Boolean'
     CreateUser: 'User'
+    DeleteUser: 'User'
     Login: 'String'
   }
   Query: { // field return type name
@@ -136,6 +138,9 @@ export interface NexusGenArgTypes {
     }
     CreateUser: { // args
       UserInput?: NexusGenInputs['UserInputType'] | null; // UserInputType
+    }
+    DeleteUser: { // args
+      InPassword: string; // String!
     }
     Login: { // args
       LoginInput?: NexusGenInputs['LoginInputType'] | null; // LoginInputType
