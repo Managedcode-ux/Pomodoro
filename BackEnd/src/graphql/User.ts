@@ -74,10 +74,12 @@ export const UserCreation = mutationField("CreateUser", {
   type: User,
   args: { UserInput },
   async resolve(parents, args, context) {
+    console.log("INSIDE USER CREATION");
+    debugger;
     let EncPass;
-
     let { UserInput: { Username, Email, Password } } = args;
-
+    console.log(Username, Email, Password);
+    debugger;
     if (typeof (process.env.SALT_ROUND) === "string") {
       EncPass = bcrypt.hashSync(Password, parseInt(process.env.SALT_ROUND));
       try {
@@ -111,49 +113,49 @@ export const UserCreation = mutationField("CreateUser", {
 
 
 
-export const DeleteUser = mutationField("DeleteUser",{
-  type:User,
-  args:{
-    InPassword:nonNull(stringArg())
+export const DeleteUser = mutationField("DeleteUser", {
+  type: User,
+  args: {
+    InPassword: nonNull(stringArg())
   },
-  async resolve(parents,args,context){
+  async resolve(parents, args, context) {
 
-    let deletedUser:any 
-    const hash:{Password:string} | null = await prisma_obj.user_coll.findUnique({
-      where:{
-        UserId:context.finalUser.UserId
+    let deletedUser: any
+    const hash: { Password: string } | null = await prisma_obj.user_coll.findUnique({
+      where: {
+        UserId: context.finalUser.UserId
       },
-      select:{
-        Password:true
+      select: {
+        Password: true
       }
     })
-    
 
-    if(!context.finalUser){
-      throw new GraphQLError("Unauthenticated",{
-        extensions:{
-          code:"Please Login To Proceed !!",
-          status:{code:401}
+
+    if (!context.finalUser) {
+      throw new GraphQLError("Unauthenticated", {
+        extensions: {
+          code: "Please Login To Proceed !!",
+          status: { code: 401 }
         }
       })
     }
-    
-    try{
-      if(hash!==null && bcrypt.compareSync(args.InPassword,hash.Password)){
+
+    try {
+      if (hash !== null && bcrypt.compareSync(args.InPassword, hash.Password)) {
         deletedUser = await prisma_obj.user_coll.delete({
-          where:{
-            UserId:context.finalUser.UserId,
-            Email:context.finalUser.Email,
+          where: {
+            UserId: context.finalUser.UserId,
+            Email: context.finalUser.Email,
           },
-          select:{
-            UserId:true,
-            Username:true,
-            Email:true,
+          select: {
+            UserId: true,
+            Username: true,
+            Email: true,
           }
         });
       }
-      
-    }finally{
+
+    } finally {
       return deletedUser
     }
   }

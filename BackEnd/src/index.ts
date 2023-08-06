@@ -1,4 +1,4 @@
-import { ApolloServer } from "@apollo/server";
+import { ApolloServer, BaseContext } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import "dotenv/config";
 import { schema } from "./schema";
@@ -17,15 +17,19 @@ interface IUser {
   UserId: string;
   Username: string;
   Email: string;
-  Password: string;
+  Password?: string;
 }
+
+interface MyContext extends BaseContext {
+  finalUser: IUser | undefined | string;
+}
+
 
 const start = async () => {
   const server = new ApolloServer({ schema });
-
   const { url } = await startStandaloneServer(server, {
     listen: { port: PORT },
-    context: async ({ req, res }) => {
+    context: async ({ req }) => {
       const token = req.headers.authorization || " ";
       if (token != " ") {
         try {
@@ -42,6 +46,7 @@ const start = async () => {
             });
             if (user !== null) {
               const { Password: _, ...finalUser } = user;
+
               return { finalUser };
             } else {
               throw new GraphQLError("User Not found", {
@@ -68,10 +73,14 @@ const start = async () => {
           });
         }
       }
+      else {
+        return " "
+      }
     },
   });
 
   console.log(`🚀 Server ready at: ${url}`);
 };
+
 
 start();
