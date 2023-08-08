@@ -18,7 +18,7 @@ model Task_db{
   id String @id @default(auto()) @map("_id") @db.ObjectId
   //userId
   Title String
-  Description String? @default("null")
+  Description String? @default("null") 
   DueDate String? @default("null")
   Tomatoes Int? @default(-1)
   Priority String?  @default("null")

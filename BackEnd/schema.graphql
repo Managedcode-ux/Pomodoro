@@ -12,6 +12,7 @@ type Mutation {
   CreateUser(UserInput: UserInputType): User
   DeleteUser(InPassword: String!): User
   Login(LoginInput: LoginInputType): String
+  UpdateUser(UserUpdateInput: UpdateUserInput): User
 }
 
 enum Priority {
@@ -42,6 +43,12 @@ input TaskInputType {
   DueDate: String
   Priority: Priority
   Title: String!
+}
+
+input UpdateUserInput {
+  Email: String
+  Password: String
+  Username: String
 }
 
 type User {

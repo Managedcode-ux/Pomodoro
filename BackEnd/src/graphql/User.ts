@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import { prisma_obj } from "../prisma/prisma";
 import { GraphQLError } from "graphql";
 import * as jwt from "jsonwebtoken";
+import { throws } from "assert";
 
 export const User = objectType({
   name: "User",
@@ -23,6 +24,15 @@ export const UserInput = inputObjectType({
   },
 });
 
+export const UserUpdateInput = inputObjectType({
+  name:"UpdateUserInput",
+  definition(t){
+    t.nullable.string("Username")
+    t.nullable.string("Email")
+    t.nullable.string("Password")
+  }
+})
+
 export const LoginInput = inputObjectType({
   name: "LoginInputType",
   definition(t) {
@@ -34,8 +44,8 @@ export const LoginInput = inputObjectType({
 // TODO 1:- Create a query to find a user
 // TODO 1.2 :-Create a query to login a User (Done)
 // TODO 2:- Create a mutation to create User (Done)
-// TODO 3:- Create a mutation to delete user
-// TODO 4:- Create a mutation to update user
+// TODO 3:- Create a mutation to delete user (Done)
+// TODO 4:- Create a mutation to update user (Done)
 
 export const loginUser = mutationField("Login", {
   type: "String",
@@ -157,6 +167,49 @@ export const DeleteUser = mutationField("DeleteUser", {
 
     } finally {
       return deletedUser
+    }
+  }
+})
+
+export const UpdateUser = mutationField("UpdateUser",{
+  type: User,
+  args: {UserUpdateInput},
+  async resolve(parent,args,context){
+    console.log("Args ==>",args)
+    if(context.finalUser){
+      const data = args.UserUpdateInput;
+      
+      try {
+        const res = await prisma_obj.user_coll.update({
+          where: {
+            UserId: context.finalUser.UserId
+          },
+          data:{
+            Email:data.Email != null ? data.Email:undefined,
+            Username: data.Username != null ? data.Username:undefined,
+            Password: data.password != null ? data.password:undefined,
+          },
+          select:{
+            UserId:true,
+            Email:true,
+            Username:true
+          }
+        });
+        console.log(res)
+
+        return res;
+      } catch (error) {
+        console.log(error)
+        throw new GraphQLError("Something Went Wrong! Please try again later")
+      }
+    } 
+    else{
+      throw new GraphQLError("Unauthenticated",{
+        extensions:{
+          code:"Please Login to Proceed",
+          status:{code:401}
+        }
+      })
     }
   }
 })
