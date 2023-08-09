@@ -35,6 +35,9 @@ export interface NexusGenInputs {
     Password: string; // String!
     Username: string; // String!
   }
+  UserSearchInput: { // input type
+    Email: string; // String!
+  }
 }
 
 export interface NexusGenEnums {
@@ -52,6 +55,10 @@ export interface NexusGenScalars {
 export interface NexusGenObjects {
   Mutation: {};
   Query: {};
+  SearchedUser: { // root type
+    Email: string; // String!
+    Username?: string | null; // String
+  }
   Task: { // root type
     CompletionStatus: boolean; // Boolean!
     CreatedOn: string; // String!
@@ -89,7 +96,12 @@ export interface NexusGenFieldTypes {
     UpdateUser: NexusGenRootTypes['User'] | null; // User
   }
   Query: { // field return type
+    FindUser: NexusGenRootTypes['SearchedUser'] | null; // SearchedUser
     Tasks: NexusGenRootTypes['Task'][] | null; // [Task!]
+  }
+  SearchedUser: { // field return type
+    Email: string; // String!
+    Username: string | null; // String
   }
   Task: { // field return type
     CompletionStatus: boolean; // Boolean!
@@ -118,7 +130,12 @@ export interface NexusGenFieldTypeNames {
     UpdateUser: 'User'
   }
   Query: { // field return type name
+    FindUser: 'SearchedUser'
     Tasks: 'Task'
+  }
+  SearchedUser: { // field return type name
+    Email: 'String'
+    Username: 'String'
   }
   Task: { // field return type name
     CompletionStatus: 'Boolean'
@@ -154,6 +171,11 @@ export interface NexusGenArgTypes {
     }
     UpdateUser: { // args
       UserUpdateInput?: NexusGenInputs['UpdateUserInput'] | null; // UpdateUserInput
+    }
+  }
+  Query: {
+    FindUser: { // args
+      UserSearchInput?: NexusGenInputs['UserSearchInput'] | null; // UserSearchInput
     }
   }
 }

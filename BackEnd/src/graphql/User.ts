@@ -1,10 +1,9 @@
-import { list, nonNull, objectType } from "nexus";
-import { inputObjectType, mutationField, mutationType, stringArg } from "nexus/dist/core";
+import {  nonNull, objectType } from "nexus";
+import { inputObjectType, mutationField,queryField, stringArg } from "nexus/dist/core";
 import bcrypt from "bcryptjs";
 import { prisma_obj } from "../prisma/prisma";
 import { GraphQLError } from "graphql";
 import * as jwt from "jsonwebtoken";
-import { throws } from "assert";
 
 export const User = objectType({
   name: "User",
@@ -14,6 +13,14 @@ export const User = objectType({
     t.nonNull.string("Email");
   },
 });
+
+export const SearchedUser = objectType({
+  name:"SearchedUser",
+  definition(t){
+    t.string("Username"),
+    t.nonNull.string("Email")
+  }
+})
 
 export const UserInput = inputObjectType({
   name: "UserInputType",
@@ -33,6 +40,13 @@ export const UserUpdateInput = inputObjectType({
   }
 })
 
+export const UserSearchInput = inputObjectType({
+  name:"UserSearchInput",
+  definition(t){
+    t.nonNull.string("Email")
+  }
+})
+
 export const LoginInput = inputObjectType({
   name: "LoginInputType",
   definition(t) {
@@ -41,11 +55,48 @@ export const LoginInput = inputObjectType({
   },
 });
 
-// TODO 1:- Create a query to find a user
+// TODO 1:- Create a query to find a user (Done)
 // TODO 1.2 :-Create a query to login a User (Done)
 // TODO 2:- Create a mutation to create User (Done)
 // TODO 3:- Create a mutation to delete user (Done)
 // TODO 4:- Create a mutation to update user (Done)
+
+export const findUser = queryField('FindUser',{
+  type:SearchedUser,
+  args:{UserSearchInput},
+  async resolve(parents,args,context){
+    const data = args.UserSearchInput
+    
+    if(!context.finalUser){
+      throw new GraphQLError("Unauthenticated",{
+        extensions:{
+          code:"Please Login to proceed!",
+          status:{code:401}
+        }
+      })
+    }
+
+    try { 
+      const SearchedData = await prisma_obj.user_coll.findUnique({
+        where:{
+          Email: data.Email
+        },
+        select:{
+          Username: true,
+          Email: true,
+          Password:false
+        }
+      })
+     
+      return SearchedData
+
+    } catch (error) {
+      
+      throw new GraphQLError("Something Went Wrong!")
+    }
+
+  }
+})
 
 export const loginUser = mutationField("Login", {
   type: "String",
@@ -84,11 +135,11 @@ export const UserCreation = mutationField("CreateUser", {
   type: User,
   args: { UserInput },
   async resolve(parents, args, context) {
-    console.log("INSIDE USER CREATION");
-    debugger;
+    
+    
     let EncPass;
     let { UserInput: { Username, Email, Password } } = args;
-    console.log(Username, Email, Password);
+   
     debugger;
     if (typeof (process.env.SALT_ROUND) === "string") {
       EncPass = bcrypt.hashSync(Password, parseInt(process.env.SALT_ROUND));
@@ -175,7 +226,7 @@ export const UpdateUser = mutationField("UpdateUser",{
   type: User,
   args: {UserUpdateInput},
   async resolve(parent,args,context){
-    console.log("Args ==>",args)
+    
     if(context.finalUser){
       const data = args.UserUpdateInput;
       
@@ -195,11 +246,11 @@ export const UpdateUser = mutationField("UpdateUser",{
             Username:true
           }
         });
-        console.log(res)
+        
 
         return res;
       } catch (error) {
-        console.log(error)
+       
         throw new GraphQLError("Something Went Wrong! Please try again later")
       }
     } 
