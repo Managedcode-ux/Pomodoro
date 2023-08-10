@@ -14,10 +14,10 @@ datasource db {
 }
 
 
-model Task_db{
+model Task_coll{
   id String @id @default(auto()) @map("_id") @db.ObjectId
-  //userId
-  Title String
+  userId String @db.ObjectId 
+  Title String 
   Description String? @default("null") 
   DueDate String? @default("null")
   Tomatoes Int? @default(-1)

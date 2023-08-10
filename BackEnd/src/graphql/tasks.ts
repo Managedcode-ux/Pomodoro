@@ -2,8 +2,7 @@ import {  extendType, inputObjectType, intArg, list, mutationField, nonNull, nul
 import { DateScalar } from "./CustomTypes/customTypes";
 import { Priority } from "./CustomTypes/Enums";
 import {prisma_obj} from "../prisma/prisma"
-
-
+import { GraphQLError } from "graphql";
 
 export const TaskInput = inputObjectType({
   name:"TaskInputType",
@@ -50,8 +49,8 @@ export const Task = objectType({
 // FIXME:- Convert CreatedOn and DueDate inside Task(ObjectType) and TaskInput to DateScalar when frontend is completed
 
 
-// TODO 1:- Create a Query to get tasks  
-// TODO 2:- Create a mutation to create tasks (Done)
+// TODO 1:- Create a Query to get tasks 
+// TODO 2:- Create a mutation to create tasks
 // TODO 3:- Connect graphQL to mongo
 // TODO 4:- Create a mutation to delete tasks
 // TODO 5:- Create a mutation to update tasks
@@ -76,42 +75,54 @@ export const TasksQuery = extendType({ type:'Query',
       }
     })
   }
-})
+}) 
 
 
 
 
 // CREATE TASK MUTATION
+ 
 
 
 
 export const CreateTask = mutationField('CreateTask',{
-  type: "Boolean",
+  type: 'Boolean',
   args:{
-    Task:list(nonNull(TaskInput))
+    Task:nonNull(list(nonNull(TaskInput)))
   },
   async resolve(parent,args,context){
-    
-    const InputTask = args.Task
-    try{
-      const res = await prisma_obj.$runCommandRaw({
-        insert:'Task_db',
-        bypassDocumentValidation:false,
-        documents:InputTask
-      })
 
-      if(res.ok === 1){
+    if(!context.finalUser){
+      throw new GraphQLError("Unauthenticated",{
+        extensions:{
+          code:"Please login/Signup to proceed!",
+          status:{code:401}
+        }
+      })
+    }
+
+    const InputTask = args.Task
+    const UserId = context.finalUser.UserId
+
+    InputTask.forEach((task:any) => {
+      task["userId"] = UserId;
+    });
+
+    try{
+      const insertedData = await prisma_obj.task_coll.createMany({
+        data:InputTask
+      });
+
+      if(insertedData.count === InputTask.length){ 
         return true;
       }
       else{
-        console.error(res)
         return false;
       }
-
     }catch(e){
-      console.error(e)
-      return false
-    }
-    
+      console.log(e);
+      return e;
+    }  
+
   }
-}) 
+})

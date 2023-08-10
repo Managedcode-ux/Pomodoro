@@ -158,7 +158,7 @@ export interface NexusGenFieldTypeNames {
 export interface NexusGenArgTypes {
   Mutation: {
     CreateTask: { // args
-      Task?: NexusGenInputs['TaskInputType'][] | null; // [TaskInputType!]
+      Task: NexusGenInputs['TaskInputType'][]; // [TaskInputType!]!
     }
     CreateUser: { // args
       UserInput?: NexusGenInputs['UserInputType'] | null; // UserInputType

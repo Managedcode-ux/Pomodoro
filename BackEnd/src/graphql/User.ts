@@ -135,12 +135,12 @@ export const UserCreation = mutationField("CreateUser", {
   type: User,
   args: { UserInput },
   async resolve(parents, args, context) {
-    
-    
+
+
     let EncPass;
     let { UserInput: { Username, Email, Password } } = args;
-   
-    debugger;
+
+
     if (typeof (process.env.SALT_ROUND) === "string") {
       EncPass = bcrypt.hashSync(Password, parseInt(process.env.SALT_ROUND));
       try {
