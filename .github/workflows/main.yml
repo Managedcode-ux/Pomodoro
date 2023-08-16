@@ -24,6 +24,6 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: ./BackEnd
-          file: ./Dockerfile
+          file: ./BackEnd/Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/pomodoro:latest
