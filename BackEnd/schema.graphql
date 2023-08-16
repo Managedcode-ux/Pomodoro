@@ -23,7 +23,7 @@ enum Priority {
 
 type Query {
   FindUser(UserSearchInput: UserSearchInput): SearchedUser
-  Tasks: [Task!]
+  GetTasks(SortPreference: Sorting): [Task]
 }
 
 type SearchedUser {
@@ -31,16 +31,20 @@ type SearchedUser {
   Username: String
 }
 
+enum Sorting {
+  ALL
+  COMPLETED
+  INCOMPLETE
+}
+
 type Task {
   CompletionStatus: Boolean!
   CreatedOn: String!
   Description: String!
-  DueDate: String!
+  DueDate: String
   Priority: Priority
-  TaskId: ID!
   Title: String!
   Tomatoes: Int!
-  UserId: ID!
 }
 
 input TaskInputType {

@@ -42,6 +42,7 @@ export interface NexusGenInputs {
 
 export interface NexusGenEnums {
   Priority: "HIGH" | "LOW" | "MODERATE"
+  Sorting: "ALL" | "COMPLETED" | "INCOMPLETE"
 }
 
 export interface NexusGenScalars {
@@ -63,12 +64,10 @@ export interface NexusGenObjects {
     CompletionStatus: boolean; // Boolean!
     CreatedOn: string; // String!
     Description: string; // String!
-    DueDate: string; // String!
+    DueDate?: string | null; // String
     Priority?: NexusGenEnums['Priority'] | null; // Priority
-    TaskId: string; // ID!
     Title: string; // String!
     Tomatoes: number; // Int!
-    UserId: string; // ID!
   }
   User: { // root type
     Email: string; // String!
@@ -97,7 +96,7 @@ export interface NexusGenFieldTypes {
   }
   Query: { // field return type
     FindUser: NexusGenRootTypes['SearchedUser'] | null; // SearchedUser
-    Tasks: NexusGenRootTypes['Task'][] | null; // [Task!]
+    GetTasks: Array<NexusGenRootTypes['Task'] | null> | null; // [Task]
   }
   SearchedUser: { // field return type
     Email: string; // String!
@@ -107,12 +106,10 @@ export interface NexusGenFieldTypes {
     CompletionStatus: boolean; // Boolean!
     CreatedOn: string; // String!
     Description: string; // String!
-    DueDate: string; // String!
+    DueDate: string | null; // String
     Priority: NexusGenEnums['Priority'] | null; // Priority
-    TaskId: string; // ID!
     Title: string; // String!
     Tomatoes: number; // Int!
-    UserId: string; // ID!
   }
   User: { // field return type
     Email: string; // String!
@@ -131,7 +128,7 @@ export interface NexusGenFieldTypeNames {
   }
   Query: { // field return type name
     FindUser: 'SearchedUser'
-    Tasks: 'Task'
+    GetTasks: 'Task'
   }
   SearchedUser: { // field return type name
     Email: 'String'
@@ -143,10 +140,8 @@ export interface NexusGenFieldTypeNames {
     Description: 'String'
     DueDate: 'String'
     Priority: 'Priority'
-    TaskId: 'ID'
     Title: 'String'
     Tomatoes: 'Int'
-    UserId: 'ID'
   }
   User: { // field return type name
     Email: 'String'
@@ -176,6 +171,9 @@ export interface NexusGenArgTypes {
   Query: {
     FindUser: { // args
       UserSearchInput?: NexusGenInputs['UserSearchInput'] | null; // UserSearchInput
+    }
+    GetTasks: { // args
+      SortPreference?: NexusGenEnums['Sorting'] | null; // Sorting
     }
   }
 }

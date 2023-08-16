@@ -1,7 +1,7 @@
-import {  extendType, inputObjectType, intArg, list, mutationField, nonNull, nullable, objectType, stringArg } from "nexus";
+import {  extendType, inputObjectType, list, mutationField, nonNull,objectType} from "nexus";
 import { DateScalar } from "./CustomTypes/customTypes";
-import { Priority } from "./CustomTypes/Enums";
-import {prisma_obj} from "../prisma/prisma"
+import { Priority,SortPreference } from "./CustomTypes/Enums";
+import {prisma_obj} from "../../prisma/prisma"
 import { GraphQLError } from "graphql";
 
 export const TaskInput = inputObjectType({
@@ -23,17 +23,18 @@ export const TaskInput = inputObjectType({
 
 
 
+
 export const Task = objectType({
   name:"Task",
   definition(t){
-    t.nonNull.id("TaskId")
-    t.nonNull.id("UserId")
+    // t.nonNull.id("TaskId")
+    // t.nonNull.id("UserId")
     t.nonNull.string("Title")
     t.nonNull.string("Description")
     // t.nonNull.field("DueDate",{
     //   type:DateScalar
     // })
-    t.nonNull.string("DueDate")
+    t.string("DueDate")
     t.nonNull.int("Tomatoes")
     t.field("Priority",{
       type:Priority
@@ -50,41 +51,71 @@ export const Task = objectType({
 
 
 // TODO 1:- Create a Query to get tasks 
-// TODO 2:- Create a mutation to create tasks
-// TODO 3:- Connect graphQL to mongo
+// TODO 2:- Create a mutation to create tasks(Done)
+// TODO 3:- Connect graphQL to mongo(Done)
 // TODO 4:- Create a mutation to delete tasks
 // TODO 5:- Create a mutation to update tasks
-const tasks_list:any = []
+
 
 
 
 // Get Tasks Query
-export const TasksQuery = extendType({ type:'Query',
-  definition(t){
-    t.list.nonNull.field("Tasks",{
-      type:'Task',
-      resolve(parent,args,context){
-
+export const Get_Tasks = extendType({
+  type:"Query",
+  definition: t=>{
+    t.field('GetTasks',{
+      type:list(Task),
+      args:{SortPreference},
+      async resolve(parent,args,context){
+        console.log("PARENT ==>",parent)
+        console.log("ARGS ==>",args)
+        console.log("context ==>",context)
         
-        console.log("PARENT =>",parent)
-        console.log("ARGS =>",args)
-        console.log("CONTEXT =>",context)
-        // console.log(data)
-        console.log(tasks_list)
-        return tasks_list
+        const choice = args.SortPreference
+        
+        if(!context.finalUser){
+          throw new GraphQLError("Unauthenticated",{
+            extensions:{
+              code:"Please login/Signup to proceed!",
+              status:{code:401}
+            }
+          })
+        }
+        console.log("Choice ==>",choice)
+        switch (choice) {
+          
+          case 'ALL':
+            console.log("All filter chosen");
+            try{
+              const AllTasks = await prisma_obj.task_coll.findMany({
+                where: {
+                  userId: context.UserId
+                },
+              })
+              console.log("ALLTASKS ==>",AllTasks)
+              return AllTasks;
+            }catch (e) {
+              throw new GraphQLError("Something went wrong!Please try again later")
+            }
+            break;
+          case 'COMPLETED':
+            console.log("Completed filter chosen")
+            break;
+          case 'INCOMPLETE':
+            console.log("Incomplete filter chosen")
+            break;
+          default:
+            console.log("default/null chosen!")
+        }
+        
       }
     })
   }
-}) 
-
+})
 
 
 
 // CREATE TASK MUTATION
- 
-
-
-
 export const CreateTask = mutationField('CreateTask',{
   type: 'Boolean',
   args:{
@@ -113,7 +144,7 @@ export const CreateTask = mutationField('CreateTask',{
         data:InputTask
       });
 
-      if(insertedData.count === InputTask.length){ 
+      if(insertedData.count === InputTask.length){
         return true;
       }
       else{
@@ -122,7 +153,7 @@ export const CreateTask = mutationField('CreateTask',{
     }catch(e){
       console.log(e);
       return e;
-    }  
+    }
 
   }
 })

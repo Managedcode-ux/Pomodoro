@@ -4,7 +4,7 @@ import "dotenv/config";
 import { schema } from "./schema";
 import * as jwt from "jsonwebtoken";
 import { GraphQLError } from "graphql/error";
-import { prisma_obj } from "./prisma/prisma";
+import { prisma_obj } from "../prisma/prisma";
 
 const PORT = 9000;
 
