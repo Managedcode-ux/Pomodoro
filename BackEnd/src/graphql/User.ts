@@ -1,7 +1,7 @@
 import {  nonNull, objectType } from "nexus";
 import { inputObjectType, mutationField,queryField, stringArg } from "nexus/dist/core";
 import bcrypt from "bcryptjs";
-import { prisma_obj } from "../prisma/prisma";
+import { prisma_obj } from "../../prisma/prisma";
 import { GraphQLError } from "graphql";
 import * as jwt from "jsonwebtoken";
 

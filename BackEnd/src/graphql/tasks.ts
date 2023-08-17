@@ -1,7 +1,7 @@
 import {  extendType, inputObjectType, list, mutationField, nonNull,objectType} from "nexus";
 import { DateScalar } from "./CustomTypes/customTypes";
 import { Priority,SortPreference } from "./CustomTypes/Enums";
-import {prisma_obj} from "../prisma/prisma"
+import {prisma_obj} from "../../prisma/prisma"
 import { GraphQLError } from "graphql";
 import {TYPEGEN_HEADER} from "nexus/dist-esm/lang";
 
