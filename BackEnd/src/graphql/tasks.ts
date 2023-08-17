@@ -1,8 +1,9 @@
 import {  extendType, inputObjectType, list, mutationField, nonNull,objectType} from "nexus";
 import { DateScalar } from "./CustomTypes/customTypes";
 import { Priority,SortPreference } from "./CustomTypes/Enums";
-import {prisma_obj} from "../../prisma/prisma"
+import {prisma_obj} from "../prisma/prisma"
 import { GraphQLError } from "graphql";
+import {TYPEGEN_HEADER} from "nexus/dist-esm/lang";
 
 export const TaskInput = inputObjectType({
   name:"TaskInputType",
@@ -50,7 +51,7 @@ export const Task = objectType({
 // FIXME:- Convert CreatedOn and DueDate inside Task(ObjectType) and TaskInput to DateScalar when frontend is completed
 
 
-// TODO 1:- Create a Query to get tasks 
+// TODO 1:- Create a Query to get tasks (Done)
 // TODO 2:- Create a mutation to create tasks(Done)
 // TODO 3:- Connect graphQL to mongo(Done)
 // TODO 4:- Create a mutation to delete tasks
@@ -67,9 +68,6 @@ export const Get_Tasks = extendType({
       type:list(Task),
       args:{SortPreference},
       async resolve(parent,args,context){
-        console.log("PARENT ==>",parent)
-        console.log("ARGS ==>",args)
-        console.log("context ==>",context)
         
         const choice = args.SortPreference
         
@@ -81,33 +79,64 @@ export const Get_Tasks = extendType({
             }
           })
         }
-        console.log("Choice ==>",choice)
         switch (choice) {
-          
           case 'ALL':
-            console.log("All filter chosen");
             try{
               const AllTasks = await prisma_obj.task_coll.findMany({
                 where: {
                   userId: context.UserId
                 },
               })
-              console.log("ALLTASKS ==>",AllTasks)
               return AllTasks;
             }catch (e) {
               throw new GraphQLError("Something went wrong!Please try again later")
             }
             break;
           case 'COMPLETED':
-            console.log("Completed filter chosen")
+            try {
+              const CompletedTasks = await prisma_obj.task_coll.findMany({
+                where: {
+                  AND: [
+                    {
+                      userId: context.UserId
+                    },
+                    {
+                      CompletionStatus: {
+                        not: false
+                      }
+                    }
+                  ]
+                }
+              })
+              return CompletedTasks
+            }
+            catch (e){
+              throw new GraphQLError("Something went wrong!Please try again later")
+            }
             break;
           case 'INCOMPLETE':
-            console.log("Incomplete filter chosen")
+            try{
+              const IncompleteTasks = await prisma_obj.task_coll.findMany({
+                where:{
+                  AND:[
+                      {
+                        userId:context.UserId
+                      },
+                      {
+                        CompletionStatus:{
+                          not:true
+                        }
+                      }
+                  ]
+                }
+              })
+              return IncompleteTasks
+            }catch (e) {
+              return e
+            }
             break;
-          default:
-            console.log("default/null chosen!")
+
         }
-        
       }
     })
   }
@@ -144,14 +173,9 @@ export const CreateTask = mutationField('CreateTask',{
         data:InputTask
       });
 
-      if(insertedData.count === InputTask.length){
-        return true;
-      }
-      else{
-        return false;
-      }
+      return insertedData.count === InputTask.length;
     }catch(e){
-      console.log(e);
+
       return e;
     }
 
