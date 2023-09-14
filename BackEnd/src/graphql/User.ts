@@ -156,7 +156,6 @@ export const UserCreation = mutationField("CreateUser", {
             Email: true,
           },
         });
-
         return res;
       } catch (e: any) {
         if (e.code === "P2002") {

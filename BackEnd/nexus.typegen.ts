@@ -25,6 +25,12 @@ export interface NexusGenInputs {
     Priority?: NexusGenEnums['Priority'] | null; // Priority
     Title: string; // String!
   }
+  UpdateTaskType: { // input type
+    Description?: string | null; // String
+    DueDate?: string | null; // String
+    Priority?: NexusGenEnums['Priority'] | null; // Priority
+    Title?: string | null; // String
+  }
   UpdateUserInput: { // input type
     Email?: string | null; // String
     Password?: string | null; // String
@@ -93,6 +99,7 @@ export interface NexusGenFieldTypes {
     DeleteTask: boolean | null; // Boolean
     DeleteUser: NexusGenRootTypes['User'] | null; // User
     Login: string | null; // String
+    UpdateTask: NexusGenRootTypes['Task'] | null; // Task
     UpdateUser: NexusGenRootTypes['User'] | null; // User
   }
   Query: { // field return type
@@ -126,6 +133,7 @@ export interface NexusGenFieldTypeNames {
     DeleteTask: 'Boolean'
     DeleteUser: 'User'
     Login: 'String'
+    UpdateTask: 'Task'
     UpdateUser: 'User'
   }
   Query: { // field return type name
@@ -168,6 +176,9 @@ export interface NexusGenArgTypes {
     }
     Login: { // args
       LoginInput?: NexusGenInputs['LoginInputType'] | null; // LoginInputType
+    }
+    UpdateTask: { // args
+      TaskUpdateInput?: NexusGenInputs['UpdateTaskType'] | null; // UpdateTaskType
     }
     UpdateUser: { // args
       UserUpdateInput?: NexusGenInputs['UpdateUserInput'] | null; // UpdateUserInput

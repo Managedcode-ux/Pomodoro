@@ -5,6 +5,7 @@ import {prisma_obj} from "../../prisma/prisma"
 import { GraphQLError } from "graphql";
 import {TYPEGEN_HEADER} from "nexus/dist-esm/lang";
 import {stringArg} from "nexus/dist/core";
+import {InputDefinitionBlock} from "nexus/dist-esm/definitions/definitionBlocks";
 
 export const TaskInput = inputObjectType({
   name:"TaskInputType",
@@ -23,7 +24,17 @@ export const TaskInput = inputObjectType({
   },
 })
 
-
+export const TaskUpdateInput = inputObjectType({
+  name: "UpdateTaskType",
+  definition(t) {
+    t.nullable.string("Title")
+    t.nullable.string("Description")
+    t.nullable.string("DueDate")
+    t.nullable.field("Priority",{
+      type:Priority
+    })
+  }
+})
 
 
 export const Task = objectType({
@@ -219,5 +230,13 @@ export const DeleteTask = mutationField("DeleteTask",{
     catch (e) {
       return false
     }
+  }
+})
+
+export const updateTask = mutationField("UpdateTask",{
+  type:Task,
+  args:{TaskUpdateInput},
+  async resolve(parents,args,context){
+    console
   }
 })
