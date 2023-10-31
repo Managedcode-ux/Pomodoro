@@ -1,17 +1,9 @@
 import {gql, useMutation} from "@apollo/client";
-import {useState} from "react";
+import {useRef} from "react";
 
-// const signup_query = gql`
-//     {
-//         CreateUser(Email:"dev1",Password:"dev1",Username:"dev1"){
-//             Email
-//             Password
-//             Username
-//         }
-//     }
-// `
 
-const test = gql`
+
+const SignUpUser = gql`
     mutation CreateUser($userInput: UserInputType!) {
         CreateUser(UserInput: $userInput) {
             Email
@@ -21,69 +13,74 @@ const test = gql`
     }
 `
 
-let Comp = () => {
-  const [todoInput, setTodoInput] = useState('')
-  const [addTodo,{data}] = useMutation(test)
 
-  console.log("DATA ==>", data)
+const  SignUpComp = () => {
 
+ // This code snippet is using the `useMutation` hook to handle the sign-up process for a user. It is likely making a network request to a server to create a new user account.
+  const [signUpUser,{data,loading}] =useMutation(SignUpUser)
+  const UserNameInputRef = useRef<HTMLInputElement|null>(null)
+  const PasswordInputRef = useRef<HTMLInputElement|null>(null)
+  const EmailInputRef = useRef<HTMLInputElement|null>(null)
+
+  if(loading)
+    return <p>Submitting</p>
+
+  const handleSubmit = async (e:any) => {
+    let input
+    e.preventDefault();
+
+     input = {
+        Email: (EmailInputRef.current as HTMLInputElement | null)?.value || "" ,
+        Password: (PasswordInputRef.current as HTMLInputElement| null)?.value ||"",
+        Username: (UserNameInputRef.current as HTMLInputElement|null)?.value || ""
+      }
+    try{
+      const final_data = await signUpUser({variables:{userInput:input}})
+      console.log("FINAL_DATA ==>",final_data)
+    }catch (e:any){
+      for(let subError of e.graphQLErrors){
+        console.log(subError.message)
+      }
+    }
+  }
 
   return(
-  <div>
-   <form
-     className='formInput'
-     onSubmit={(e) => {
-       e.preventDefault();
-       addTodo({variables:{
-          userInput: {
-            Email: "testing000",
-            Password: "testing000",
-            Username: "testing000",
-          }
-         }})
-     }
-   }>
-     <input
-        className='input'
-        placeholder="Somthing"
-        value={todoInput}
-        onChange={e => (setTodoInput(e.target.value))}
-     />
-     <i className="inputMarker fa fa-angle-right"/>
-   </form>
-    <p>{JSON.stringify(data)}</p>
-  </div>
+    <>
+      <form className='SignUpInput' onSubmit={handleSubmit}>
+        <label>
+          Email:
+          <input
+            ref={EmailInputRef}
+            type='email'
+            className='Email'
+            placeholder="Email"
+          />
+        </label>
+        <label>
+          Password:
+          <input
+            ref = {PasswordInputRef}
+            type='password'
+            className='Password'
+            placeholder="Password"
+          />
+        </label>
+        <label>
+          UserName:
+          <input
+            ref = {UserNameInputRef}
+            type='text'
+            className='Username'
+            placeholder="Username"
+          />
+        </label>
+        <button type='submit'>SignUp</button>
+      </form>
+      <p>{JSON.stringify(data)}</p>
+    </>
   )
 }
 
 
-// let Comp = () =>{
-//   let input: HTMLInputElement | null;
-//   const [addTodo,{data}] = useMutation(test)
-//   addTodo({
-//     Email: "testing1",
-//     "Password": null,
-//     "Username": null
-//   })
-//   console.log("ANYTHING ==>",addTodo)
-//   console.log("DATA ==>", data)
-//
-//   return(
-//     <form
-//       onSubmit={e => {
-//         e.preventDefault();
-//         addTodo({ variables: { type: input.value } });
-//         input.value = '';
-//       }}
-//     >
-//       <input
-//         ref={node => {
-//           input = node;
-//         }}
-//       />
-//       <button type="submit">Add Todo</button>
-//     </form>
-//   )
-// }
+export default SignUpComp
 
-export default Comp

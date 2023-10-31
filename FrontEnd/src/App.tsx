@@ -1,13 +1,40 @@
-import './App.css'
-import Comp from "./Features/Users/SignUp.tsx";
+// import "./App.css";
+import {createBrowserRouter, RouterProvider} from "react-router-dom";
+// import SignUpComp from "./Features/Users/SignUp.tsx";
+import Layout from "./Features/Commons/Root.tsx";
+import LandingPage from "./Features/Commons/LandingPage.tsx";
+import AuthenticationForm from "./Features/Users/Login.tsx";
+import HomePage from "./Features/Commons/Hompage.tsx";
 
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <LandingPage />,
+    // index: true,
+  },
+  {
+    path: "/login",
+    element: <AuthenticationForm formtype="login" />,
+  },
+  {
+    path: "/register",
+    element: <AuthenticationForm formtype="register" />,
+  },
+  {
+    path: "/app",
+    element: <Layout />,
+    children: [
+      {
+        path: "home",
+        element: <HomePage />,
+      },
+    ],
+  },
+]);
 
 function App() {
-  return (
-    <>
-      <Comp/>
-    </>
-  )
+  // TO CHECK :- HOW TO SEND A PROP UPWARDS TOWARDS PARENT
+  return <RouterProvider router={router} />;
 }
 
-export default App
+export default App;

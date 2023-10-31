@@ -62,7 +62,7 @@ export interface NexusGenScalars {
 export interface NexusGenObjects {
   Mutation: {};
   Query: {};
-  SearchedUser: { // root type
+  SearchedUserInput: { // root type
     Email: string; // String!
     Username?: string | null; // String
   }
@@ -103,10 +103,10 @@ export interface NexusGenFieldTypes {
     UpdateUser: NexusGenRootTypes['User'] | null; // User
   }
   Query: { // field return type
-    FindUser: NexusGenRootTypes['SearchedUser'] | null; // SearchedUser
+    FindUser: NexusGenRootTypes['SearchedUserInput'] | null; // SearchedUserInput
     GetTasks: Array<NexusGenRootTypes['Task'] | null> | null; // [Task]
   }
-  SearchedUser: { // field return type
+  SearchedUserInput: { // field return type
     Email: string; // String!
     Username: string | null; // String
   }
@@ -137,10 +137,10 @@ export interface NexusGenFieldTypeNames {
     UpdateUser: 'User'
   }
   Query: { // field return type name
-    FindUser: 'SearchedUser'
+    FindUser: 'SearchedUserInput'
     GetTasks: 'Task'
   }
-  SearchedUser: { // field return type name
+  SearchedUserInput: { // field return type name
     Email: 'String'
     Username: 'String'
   }

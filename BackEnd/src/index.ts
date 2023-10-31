@@ -3,7 +3,7 @@ import { startStandaloneServer } from "@apollo/server/standalone";
 import "dotenv/config";
 import { schema } from "./schema";
 import * as jwt from "jsonwebtoken";
-import { GraphQLError } from "graphql/error";
+import { formatError, GraphQLError } from "graphql/error";
 import { prisma_obj } from "../prisma/prisma";
 
 const PORT = 9000;
@@ -26,10 +26,13 @@ interface MyContext extends BaseContext {
 
 
 const start = async () => {
+  // console.log("INITIALIZAING START OF APOLLO SERVER")
   const server = new ApolloServer({ schema });
   const { url } = await startStandaloneServer(server, {
     listen: { port: PORT },
     context: async ({ req }) => {
+      // console.log("Request ==>", req)
+      // console.log("INSIDE CONTEXT OF START")
       const token = req.headers.authorization || " ";
       if (token != " ") {
         try {
