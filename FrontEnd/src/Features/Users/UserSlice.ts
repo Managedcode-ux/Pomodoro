@@ -21,8 +21,7 @@ const UserSilce = createSlice({
 			state.Email = email
 			//decrypt jwt to populate other fields
 		},
-		reset_state(state, action) {
-			console.log(state, action)
+		reset_state() {
 			return UserInitialState
 		}
 	}

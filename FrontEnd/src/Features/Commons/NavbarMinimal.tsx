@@ -1,8 +1,11 @@
 import {useState} from "react";
 import {Tooltip, UnstyledButton, Stack, rem} from "@mantine/core";
-import {IconHome2, IconGauge, IconDeviceDesktopAnalytics, IconFingerprint, IconCalendarStats, IconUser, IconSettings, IconLogout, IconSwitchHorizontal, IconLogin} from "@tabler/icons-react";
+import {IconHome2, IconGauge, IconDeviceDesktopAnalytics, IconFingerprint, IconCalendarStats, IconUser, IconSettings, IconLogout} from "@tabler/icons-react";
 // import {MantineLogo} from "@mantine/ds";
 import classes from "./NavbarMinimal.module.css";
+import {useNavigate} from "react-router-dom";
+import {useDispatch} from "react-redux";
+import {reset_state} from "../Users/UserSlice";
 
 interface NavbarLinkProps {
   icon: typeof IconHome2;
@@ -32,9 +35,25 @@ const mockdata = [
 ];
 
 export function NavbarMinimal() {
+  const dispatch = useDispatch();
   const [active, setActive] = useState(2);
+  const navigate = useNavigate();
+  const links = mockdata.map((link, index) => (
+    <NavbarLink
+      {...link}
+      key={link.label}
+      active={index === active}
+      onClick={() => {
+        setActive(index);
+        navigate(`/app/${link.label}`.toLowerCase());
+      }}
+    />
+  ));
 
-  const links = mockdata.map((link, index) => <NavbarLink {...link} key={link.label} active={index === active} onClick={() => setActive(index)} />);
+  const handleLogout = () => {
+    dispatch(reset_state());
+    navigate("/", {replace: true});
+  };
 
   return (
     <nav className={classes.navbar}>
@@ -50,8 +69,8 @@ export function NavbarMinimal() {
 
       <Stack justify="center" gap={0}>
         {/* <NavbarLink icon={IconSwitchHorizontal} label="Change account" /> */}
-        <NavbarLink icon={IconLogin} label="LogIn" />
-        <NavbarLink icon={IconLogout} label="Logout" />
+        {/* <NavbarLink icon={IconLogin} label="LogIn" /> */}
+        <NavbarLink icon={IconLogout} label="Logout" onClick={handleLogout} />
       </Stack>
     </nav>
   );

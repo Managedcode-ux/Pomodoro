@@ -8,7 +8,7 @@ import {gql, useMutation} from "@apollo/client";
 import {TextInput, PasswordInput, Text, Paper, Group, PaperProps, Button, Stack} from "@mantine/core";
 import {useNavigate} from "react-router-dom";
 import {Anchor} from "@mantine/core";
-import {useEffect, useRef} from "react";
+import {useEffect} from "react";
 import {useLocation} from "react-router-dom";
 
 interface AuthFormWithType extends PaperProps {
@@ -75,7 +75,6 @@ export default function AuthFormWithType(props: AuthFormWithType) {
         const final_data = await loginUser({variables: {loginInput: input}});
         try {
           dispatch(login_user({token: final_data.data["Login"], email: input.Email}));
-          // navigate("/home");
           navigate("/app/home");
         } catch (e) {
           console.log(e);

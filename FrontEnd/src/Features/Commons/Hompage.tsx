@@ -30,7 +30,12 @@ function HomePage() {
   console.log("LOADING ==>", loading);
   console.log("ERROR ==>", error);
   console.log("DATA ==>", data);
-  return <p>Hompage</p>;
+  return (
+    <>
+      <p>Hompage</p>
+      <p>{JSON.stringify(data)}</p>
+    </>
+  );
 }
 
 export default HomePage;
