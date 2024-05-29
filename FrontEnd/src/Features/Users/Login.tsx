@@ -35,7 +35,6 @@ export default function AuthFormWithType(props: AuthFormWithType) {
   // const nameRef = useRef();
   // const emailRef = useRef();
   // const password = useRef();
-
   let location = useLocation();
   const formType = props.formtype;
   const navigate = useNavigate();

@@ -27,6 +27,8 @@ const UserSilce = createSlice({
 	}
 })
 
+export const getToken = (state: any) => state.baseReducer.user.token
+
 export const { login_user, reset_state } = UserSilce.actions
 
 export default UserSilce.reducer

@@ -1,3 +1,16 @@
+# BACKEND IGNORES
+*node_modules
+dist/
+src/generated/
+*.env*
+*.db
+package.json
+dist
+.idea
+Runner.ps1
+
+
+# FRONTEND IGNORES
 # Logs
 logs
 *.log

@@ -1,5 +1,5 @@
-import {useSelector} from "react-redux";
-import {useQuery, gql} from "@apollo/client";
+import { useSelector } from "react-redux";
+import { useQuery, gql } from "@apollo/client";
 
 const getUser = gql`
   query FindUser($userSearchInput: UserSearchInput) {
@@ -11,11 +11,11 @@ const getUser = gql`
 `;
 
 function HomePage() {
-  const storeEmail = useSelector((state: any) => state.users.Email);
-  const token = useSelector((state: any) => state.users.token);
+  const storeEmail = useSelector((state: any) => state.baseReducer.user.Email);
+  const token = useSelector((state: any) => state.baseReducer.user.token);
   console.log("Token ==>", token);
   console.log("Email ==>", storeEmail);
-  const {loading, error, data} = useQuery(getUser, {
+  const { loading, error, data } = useQuery(getUser, {
     variables: {
       userSearchInput: {
         Email: storeEmail,
