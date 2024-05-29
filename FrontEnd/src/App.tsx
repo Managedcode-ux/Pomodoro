@@ -5,6 +5,8 @@ import Layout from "./Features/Commons/Root.tsx";
 import LandingPage from "./Features/Commons/LandingPage.tsx";
 import AuthenticationForm from "./Features/Users/Login.tsx";
 import HomePage from "./Features/Commons/Hompage.tsx";
+import TaskAcc from "./Features/Tasks/TaskAccordion.tsx";
+import AddTasks from "./Features/Tasks/AddTasks.tsx";
 
 const router = createBrowserRouter([
   {
@@ -27,6 +29,14 @@ const router = createBrowserRouter([
       {
         path: "home",
         element: <HomePage />,
+      },
+      {
+        path: "AddTasks",
+        element: <AddTasks />,
+      },
+      {
+        path: "AllTasks",
+        element: <TaskAcc />,
       },
     ],
   },

@@ -1,6 +1,6 @@
-import {Grid} from "@mantine/core";
-import {NavbarMinimal} from "./NavbarMinimal";
-import {Outlet} from "react-router-dom";
+import { Grid } from "@mantine/core";
+import { NavbarMinimal } from "./NavbarMinimal";
+import { Outlet } from "react-router-dom";
 
 function Layout() {
   return (
@@ -18,3 +18,4 @@ function Layout() {
 }
 
 export default Layout;
+
