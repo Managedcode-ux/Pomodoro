@@ -6,3 +6,4 @@ src/generated/
 package.json
 dist
 .idea
+../Runner.ps1

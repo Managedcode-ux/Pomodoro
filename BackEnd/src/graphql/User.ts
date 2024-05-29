@@ -1,5 +1,5 @@
-import {  nonNull, objectType } from "nexus";
-import { inputObjectType, mutationField,queryField, stringArg } from "nexus/dist/core";
+import { nonNull, objectType } from "nexus";
+import { inputObjectType, mutationField, queryField, stringArg } from "nexus/dist/core";
 import bcrypt from "bcryptjs";
 import { prisma_obj } from "../../prisma/prisma";
 import { GraphQLError } from "graphql";
@@ -15,10 +15,10 @@ export const User = objectType({
 });
 
 export const SearchedUser = objectType({
-  name:"SearchedUser",
-  definition(t){
-    t.string("Username"),
-    t.nonNull.string("Email")
+  name: "SearchedUserInput",
+  definition(t) {
+    t.nonNull.string("Email"),
+      t.string("Username")
   }
 })
 
@@ -32,8 +32,8 @@ export const UserInput = inputObjectType({
 });
 
 export const UserUpdateInput = inputObjectType({
-  name:"UpdateUserInput",
-  definition(t){
+  name: "UpdateUserInput",
+  definition(t) {
     t.nullable.string("Username")
     t.nullable.string("Email")
     t.nullable.string("Password")
@@ -41,8 +41,8 @@ export const UserUpdateInput = inputObjectType({
 })
 
 export const UserSearchInput = inputObjectType({
-  name:"UserSearchInput",
-  definition(t){
+  name: "UserSearchInput",
+  definition(t) {
     t.nonNull.string("Email")
   }
 })
@@ -61,37 +61,38 @@ export const LoginInput = inputObjectType({
 // TODO 3:- Create a mutation to delete user (Done)
 // TODO 4:- Create a mutation to update user (Done)
 
-export const findUser = queryField('FindUser',{
-  type:SearchedUser,
-  args:{UserSearchInput},
-  async resolve(parents,args,context){
+export const findUser = queryField('FindUser', {
+  type: SearchedUser,
+  args: { UserSearchInput },
+  async resolve(parents, args, context) {
+    console.log("ARGS ==>", args)
     const data = args.UserSearchInput
-    
-    if(!context.finalUser){
-      throw new GraphQLError("Unauthenticated",{
-        extensions:{
-          code:"Please Login to proceed!",
-          status:{code:401}
+    console.log("BACKEND DATA ==>", data)
+    if (!context.finalUser) {
+      throw new GraphQLError("Unauthenticated", {
+        extensions: {
+          code: "Please Login to proceed!",
+          status: { code: 401 }
         }
       })
     }
 
-    try { 
+    try {
       const SearchedData = await prisma_obj.user_coll.findUnique({
-        where:{
+        where: {
           Email: data.Email
         },
-        select:{
+        select: {
           Username: true,
           Email: true,
-          Password:false
+          Password: false
         }
       })
-     
+
       return SearchedData
 
     } catch (error) {
-      
+      console.log("ERROR INSIDE API ==>", error)
       throw new GraphQLError("Something Went Wrong!")
     }
 
@@ -118,7 +119,7 @@ export const loginUser = mutationField("Login", {
       const isValid = bcrypt.compareSync(Password, user?.Password);
 
       if (!isValid) {
-        throw new Error("Incorrect Password!");
+        throw new Error("Incorrect Username or Password!");
       }
 
       const { Password: _, ...tokenUser } = user; // This step is used to remove password field from the user object before jwtencoding
@@ -130,6 +131,8 @@ export const loginUser = mutationField("Login", {
     // return user
   },
 });
+
+
 
 export const UserCreation = mutationField("CreateUser", {
   type: User,
@@ -156,16 +159,12 @@ export const UserCreation = mutationField("CreateUser", {
             Email: true,
           },
         });
-
+        console.log("Success")
         return res;
       } catch (e: any) {
         if (e.code === "P2002") {
-          throw new GraphQLError("User already exits", {
-            extensions: {
-              code: "Duplicate Found",
-              http: { status: 403 },
-            },
-          });
+          console.debug("Error Occured")
+          throw new Error("User already exists!")
         }
       }
     }
@@ -222,43 +221,43 @@ export const DeleteUser = mutationField("DeleteUser", {
   }
 })
 
-export const UpdateUser = mutationField("UpdateUser",{
+export const UpdateUser = mutationField("UpdateUser", {
   type: User,
-  args: {UserUpdateInput},
-  async resolve(parent,args,context){
-    
-    if(context.finalUser){
+  args: { UserUpdateInput },
+  async resolve(parent, args, context) {
+
+    if (context.finalUser) {
       const data = args.UserUpdateInput;
-      
+
       try {
         const res = await prisma_obj.user_coll.update({
           where: {
             UserId: context.finalUser.UserId
           },
-          data:{
-            Email:data.Email != null ? data.Email:undefined,
-            Username: data.Username != null ? data.Username:undefined,
-            Password: data.password != null ? data.password:undefined,
+          data: {
+            Email: data.Email != null ? data.Email : undefined,
+            Username: data.Username != null ? data.Username : undefined,
+            Password: data.password != null ? data.password : undefined,
           },
-          select:{
-            UserId:true,
-            Email:true,
-            Username:true
+          select: {
+            UserId: true,
+            Email: true,
+            Username: true
           }
         });
-        
+
 
         return res;
       } catch (error) {
-       
+
         throw new GraphQLError("Something Went Wrong! Please try again later")
       }
-    } 
-    else{
-      throw new GraphQLError("Unauthenticated",{
-        extensions:{
-          code:"Please Login to Proceed",
-          status:{code:401}
+    }
+    else {
+      throw new GraphQLError("Unauthenticated", {
+        extensions: {
+          code: "Please Login to Proceed",
+          status: { code: 401 }
         }
       })
     }

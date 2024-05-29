@@ -4,6 +4,8 @@ import { Priority,SortPreference } from "./CustomTypes/Enums";
 import {prisma_obj} from "../../prisma/prisma"
 import { GraphQLError } from "graphql";
 import {TYPEGEN_HEADER} from "nexus/dist-esm/lang";
+import {stringArg} from "nexus/dist/core";
+import {InputDefinitionBlock} from "nexus/dist-esm/definitions/definitionBlocks";
 
 export const TaskInput = inputObjectType({
   name:"TaskInputType",
@@ -22,7 +24,17 @@ export const TaskInput = inputObjectType({
   },
 })
 
-
+export const TaskUpdateInput = inputObjectType({
+  name: "UpdateTaskType",
+  definition(t) {
+    t.nullable.string("Title")
+    t.nullable.string("Description")
+    t.nullable.string("DueDate")
+    t.nullable.field("Priority",{
+      type:Priority
+    })
+  }
+})
 
 
 export const Task = objectType({
@@ -54,7 +66,7 @@ export const Task = objectType({
 // TODO 1:- Create a Query to get tasks (Done)
 // TODO 2:- Create a mutation to create tasks(Done)
 // TODO 3:- Connect graphQL to mongo(Done)
-// TODO 4:- Create a mutation to delete tasks
+// TODO 4:- Create a mutation to delete tasks(Done)
 // TODO 5:- Create a mutation to update tasks
 
 
@@ -179,5 +191,52 @@ export const CreateTask = mutationField('CreateTask',{
       return e;
     }
 
+  }
+})
+
+export const DeleteTask = mutationField("DeleteTask",{
+  type:"Boolean",
+  args:{
+    TaskId: nonNull(list(stringArg()))
+  },
+  async resolve(parents,args,context){
+    if(!context.finalUser){
+      throw new GraphQLError("Unauthenticated",{
+        extensions:{
+          code:"Please login/Signup to proceed!",
+          status:{code:401}
+        }
+      })
+    }
+    const taskId = args.TaskId
+
+    if(taskId.length <= 0){
+      throw new GraphQLError("Method not allowed",{
+        extensions:{
+          code:"List can not be empty, atleast one element should be selected",
+          status:{code:"405"}
+        }
+      })
+    }
+    try {
+      const deletedData = await prisma_obj.task_coll.deleteMany({
+        where: {
+          id: {in: taskId}
+        }
+      })
+
+      return deletedData.count === taskId.length;
+    }
+    catch (e) {
+      return false
+    }
+  }
+})
+
+export const updateTask = mutationField("UpdateTask",{
+  type:Task,
+  args:{TaskUpdateInput},
+  async resolve(parents,args,context){
+    console
   }
 })

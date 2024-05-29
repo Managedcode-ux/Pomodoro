@@ -25,6 +25,12 @@ export interface NexusGenInputs {
     Priority?: NexusGenEnums['Priority'] | null; // Priority
     Title: string; // String!
   }
+  UpdateTaskType: { // input type
+    Description?: string | null; // String
+    DueDate?: string | null; // String
+    Priority?: NexusGenEnums['Priority'] | null; // Priority
+    Title?: string | null; // String
+  }
   UpdateUserInput: { // input type
     Email?: string | null; // String
     Password?: string | null; // String
@@ -56,7 +62,7 @@ export interface NexusGenScalars {
 export interface NexusGenObjects {
   Mutation: {};
   Query: {};
-  SearchedUser: { // root type
+  SearchedUserInput: { // root type
     Email: string; // String!
     Username?: string | null; // String
   }
@@ -90,15 +96,17 @@ export interface NexusGenFieldTypes {
   Mutation: { // field return type
     CreateTask: boolean | null; // Boolean
     CreateUser: NexusGenRootTypes['User'] | null; // User
+    DeleteTask: boolean | null; // Boolean
     DeleteUser: NexusGenRootTypes['User'] | null; // User
     Login: string | null; // String
+    UpdateTask: NexusGenRootTypes['Task'] | null; // Task
     UpdateUser: NexusGenRootTypes['User'] | null; // User
   }
   Query: { // field return type
-    FindUser: NexusGenRootTypes['SearchedUser'] | null; // SearchedUser
+    FindUser: NexusGenRootTypes['SearchedUserInput'] | null; // SearchedUserInput
     GetTasks: Array<NexusGenRootTypes['Task'] | null> | null; // [Task]
   }
-  SearchedUser: { // field return type
+  SearchedUserInput: { // field return type
     Email: string; // String!
     Username: string | null; // String
   }
@@ -122,15 +130,17 @@ export interface NexusGenFieldTypeNames {
   Mutation: { // field return type name
     CreateTask: 'Boolean'
     CreateUser: 'User'
+    DeleteTask: 'Boolean'
     DeleteUser: 'User'
     Login: 'String'
+    UpdateTask: 'Task'
     UpdateUser: 'User'
   }
   Query: { // field return type name
-    FindUser: 'SearchedUser'
+    FindUser: 'SearchedUserInput'
     GetTasks: 'Task'
   }
-  SearchedUser: { // field return type name
+  SearchedUserInput: { // field return type name
     Email: 'String'
     Username: 'String'
   }
@@ -158,11 +168,17 @@ export interface NexusGenArgTypes {
     CreateUser: { // args
       UserInput?: NexusGenInputs['UserInputType'] | null; // UserInputType
     }
+    DeleteTask: { // args
+      TaskId: Array<string | null>; // [String]!
+    }
     DeleteUser: { // args
       InPassword: string; // String!
     }
     Login: { // args
       LoginInput?: NexusGenInputs['LoginInputType'] | null; // LoginInputType
+    }
+    UpdateTask: { // args
+      TaskUpdateInput?: NexusGenInputs['UpdateTaskType'] | null; // UpdateTaskType
     }
     UpdateUser: { // args
       UserUpdateInput?: NexusGenInputs['UpdateUserInput'] | null; // UpdateUserInput

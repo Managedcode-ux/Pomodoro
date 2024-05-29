@@ -24,11 +24,11 @@ enum Priority {
 }
 
 type Query {
-  FindUser(UserSearchInput: UserSearchInput): SearchedUserInput
+  FindUser(UserSearchInput: UserSearchInput): SearchedUser
   GetTasks(SortPreference: Sorting): [Task]
 }
 
-type SearchedUserInput {
+type SearchedUser {
   Email: String!
   Username: String
 }
